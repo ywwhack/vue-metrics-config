@@ -20,7 +20,7 @@
 import Draggable from 'vuedraggable'
 
 export default {
-  name: 'y-selected-list',
+  name: 'dt-selected-list',
 
   components: {
     Draggable

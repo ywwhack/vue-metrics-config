@@ -13,12 +13,12 @@
         <div v-if="maxSelectCount" style="color: #a2b1c5;">注：最多关注 {{ maxSelectCount }} 个指标</div>
       </div>
       <div class="mc-content mc-selected-content">
-        <y-selected-list
+        <dt-selected-list
           v-if="localSelectedList.length"
           :data="localSelectedList"
           @deselect-metrics="handleDeselectMetrics"
           @reorder-list="handleReorderList">
-        </y-selected-list>
+        </dt-selected-list>
         <span v-else class="mc-placeholder">暂无关注指标，请点击下列指标关注</span>
       </div>
     </div>
@@ -36,14 +36,14 @@
       </div>
       <ul class="mc-content mc-groups-content">
         <transition-group name="mc-fade">
-          <y-group
+          <dt-group
             v-for="group in filteredGroups"
             :key="group.name"
             :max-name-length="maxNameLength"
             :data="group"
             :selected-list="localSelectedList"
             @change="handleMetricsChange">
-          </y-group>
+          </dt-group>
         </transition-group>
       </ul>
     </div>
@@ -57,17 +57,17 @@
 <script>
 import Vue from 'vue'
 import { Dialog, Loading, Button, Input } from 'element-ui'
-import YGroup from './Group'
-import YSelectedList from './SelectedList'
+import DtGroup from './Group'
+import DtSelectedList from './SelectedList'
 
 [Dialog, Loading, Button, Input].forEach(component => Vue.use(component))
 
 export default {
-  name: 'metrics-config',
+  name: 'dt-metrics-config',
 
   components: {
-    YGroup,
-    YSelectedList
+    DtGroup,
+    DtSelectedList
   },
 
   props: {

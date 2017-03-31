@@ -1,26 +1,26 @@
 <template>
   <div>
-    <metrics-config
+    <dt-metrics-config
       v-model="visible"
       searchable
       :max-select-count="4"
       :groups="groups"
       :selected-list="selectedList"
       @change="selectedList = arguments[0]">
-    </metrics-config>
+    </dt-metrics-config>
     <button @click="visible = true">打开</button>
   </div>
 </template>
 
 <script>
-import MetricsConfig from '../src'
+import DtMetricsConfig from '../src'
 import GROUPS from './data.json'
 
 export default {
   name: 'basic',
 
   components: {
-    MetricsConfig
+    DtMetricsConfig
   },
 
   data () {

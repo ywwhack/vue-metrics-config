@@ -17,7 +17,7 @@
 const FONT_FACTOR = 16
 
 export default {
-  name: 'y-group',
+  name: 'dt-group',
 
   props: {
     maxNameLength: Number,
