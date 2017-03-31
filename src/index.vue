@@ -6,7 +6,10 @@
     v-loading="loading"
     @close="handleCancel">
     <div>
-      <div class="mc-title">已关注指标</div>
+      <div class="mc-title">
+        <div>已关注指标</div>
+        <div v-if="maxSelectCount" style="color: #a2b1c5;">注：最多关注 {{ maxSelectCount }} 个指标</div>
+      </div>
       <div class="mc-content">
         <y-selected-list
           v-if="localSelectedList.length"
@@ -18,7 +21,7 @@
       </div>
     </div>
     <div>
-      <div class="mc-search mc-title">
+      <div class="mc-title">
         <div>所有指标</div>
         <el-input
           v-if="searchable"
@@ -68,10 +71,9 @@ export default {
   props: {
     value: Boolean,
 
-    searchable: {
-      type: Boolean,
-      default: true
-    },
+    searchable: Boolean,
+
+    maxSelectCount: Number,
  
     selectedList: {
       type: Array,
@@ -138,9 +140,15 @@ export default {
     },
 
     handleMetricsChange ({ metrics, selected }) {
+      const { maxSelectCount, localSelectedList } = this
       let newSelectedList = []
       if (selected) {
-        newSelectedList = [ ...this.localSelectedList, metrics ]
+        // 如果达到了能关注指标的最大值，就不再添加
+        if (maxSelectCount && localSelectedList.length >= maxSelectCount) {
+          newSelectedList = localSelectedList
+        } else {
+          newSelectedList = [ ...localSelectedList, metrics ]
+        }
       } else {
         newSelectedList = this.filterMetrics(metrics)
       }
@@ -179,16 +187,14 @@ export default {
   padding: 0;
   margin: 0;
 }
-.mc-search {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
 .mc-title {
   padding-bottom: 6px;
   border-bottom: 1px solid #e0e6ed;
   font-size: 14px;
   color: #475669;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .mc-content {
   padding: 10px 0;
