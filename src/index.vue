@@ -30,14 +30,16 @@
         </el-input>
       </div>
       <ul class="mc-content">
-        <y-group
-          v-for="group in filteredGroups"
-          :key="group.name"
-          :max-name-length="maxNameLength"
-          :data="group"
-          :selected-list="localSelectedList"
-          @change="handleMetricsChange">
-        </y-group>
+        <transition-group name="mc-fade">
+          <y-group
+            v-for="group in filteredGroups"
+            :key="group.name"
+            :max-name-length="maxNameLength"
+            :data="group"
+            :selected-list="localSelectedList"
+            @change="handleMetricsChange">
+          </y-group>
+        </transition-group>
       </ul>
     </div>
     <div slot="footer" :class="['dialog-footer', 'mc-footer']">
@@ -198,5 +200,12 @@ export default {
 }
 .mc-footer {
   text-align: right;
+}
+
+.mc-fade-enter-active, .mc-fade-leave-active {
+  transition: opacity .5s
+}
+.mc-fade-enter, .mc-fade-leave-active {
+  opacity: 0
 }
 </style>
