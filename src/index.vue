@@ -18,10 +18,20 @@
       </div>
     </div>
     <div>
-      <div class="mc-title">所有指标</div>
+      <div class="mc-search mc-title">
+        <div>所有指标</div>
+        <el-input
+          v-if="searchable"
+          size="small"
+          placeholder="请输入关键字进行搜索"
+          style="width: 200px;"
+          icon="search"
+          v-model="searchText">
+        </el-input>
+      </div>
       <ul class="mc-content">
         <y-group
-          v-for="group in metricsGroups"
+          v-for="group in filteredGroups"
           :key="group.name"
           :max-name-length="maxNameLength"
           :data="group"
@@ -39,11 +49,11 @@
 
 <script>
 import Vue from 'vue'
-import { Dialog, Loading, Button } from 'element-ui'
+import { Dialog, Loading, Button, Input } from 'element-ui'
 import YGroup from './Group'
 import YSelectedList from './SelectedList'
 
-[Dialog, Loading, Button].forEach(component => Vue.use(component))
+[Dialog, Loading, Button, Input].forEach(component => Vue.use(component))
 
 export default {
   name: 'metrics-config',
@@ -55,6 +65,11 @@ export default {
 
   props: {
     value: Boolean,
+
+    searchable: {
+      type: Boolean,
+      default: true
+    },
  
     selectedList: {
       type: Array,
@@ -70,6 +85,7 @@ export default {
     return {
       visible: false,
       loading: false,
+      searchText: '',
       // 使用组件内部状态来跟踪，是因为 Dialog 按取消的时候，原来选中的 list 是不需要变的
       // 只有在按确定按钮的时候，才需要将内部的 localSelectedList 与外部 selectedMetrics 同步
       localSelectedList: [ ...this.selectedList ],
@@ -82,6 +98,21 @@ export default {
       return this.metricsGroups.reduce((max, cur) => {
         return Math.max(max, cur.name.length + 1)
       }, 0)
+    },
+
+    filteredGroups () {
+      const { searchText, metricsGroups } = this
+      if (!searchText) return metricsGroups
+
+      let result = []
+      metricsGroups.forEach(group => {
+        let g = JSON.parse(JSON.stringify(group))
+        g.items = group.items.filter(i => i.name.indexOf(searchText) > -1)
+        if (g.items.length) {
+          result.push(g)
+        }
+      })
+      return result
     }
   },
 
@@ -145,6 +176,11 @@ export default {
   list-style: none;
   padding: 0;
   margin: 0;
+}
+.mc-search {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .mc-title {
   padding-bottom: 6px;
