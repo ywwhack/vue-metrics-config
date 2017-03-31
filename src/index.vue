@@ -1,16 +1,18 @@
 <template>
   <el-dialog
-    title="指标配置"
     class="mc"
     v-model="visible"
     v-loading="loading"
+    :title="title"
+    :top="top"
+    :size="size"
     @close="handleCancel">
     <div>
       <div class="mc-title">
         <div>已关注指标</div>
         <div v-if="maxSelectCount" style="color: #a2b1c5;">注：最多关注 {{ maxSelectCount }} 个指标</div>
       </div>
-      <div class="mc-content">
+      <div class="mc-content mc-selected-content">
         <y-selected-list
           v-if="localSelectedList.length"
           :data="localSelectedList"
@@ -32,7 +34,7 @@
           v-model="searchText">
         </el-input>
       </div>
-      <ul class="mc-content">
+      <ul class="mc-content mc-groups-content">
         <transition-group name="mc-fade">
           <y-group
             v-for="group in filteredGroups"
@@ -74,6 +76,21 @@ export default {
     searchable: Boolean,
 
     maxSelectCount: Number,
+
+    size: {
+      type: String,
+      default: 'small'
+    },
+
+    top: {
+      type: String,
+      default: '50px'
+    },
+
+    title: {
+      type: String,
+      default: '指标配置'
+    },
  
     selectedList: {
       type: Array,
@@ -173,7 +190,24 @@ export default {
       this.visible = false
       // 触发父级事件，将在本地选中的ids向外传递
       this.$emit('change', this.localSelectedList)
+    },
+
+    overrideTitleStyle () {
+      const elDialog = document.querySelector('.mc .el-dialog')
+      const elHeader = elDialog.querySelector('.el-dialog__header')
+      const elTitle = elDialog.querySelector('.el-dialog__title')
+
+      elDialog.style['margin-bottom'] = '0'
+
+      elHeader.style.backgroundColor = '#1f2d3d'
+      elHeader.style.padding = '17px 25px'
+
+      elTitle.style.color = '#fff'
     }
+  },
+
+  mounted () {
+    this.overrideTitleStyle()
   }
 }
 </script>
@@ -198,7 +232,14 @@ export default {
 }
 .mc-content {
   padding: 10px 0;
+  overflow: auto;
+}
+.mc-selected-content {
+  height: 75px;
+}
+.mc-groups-content {
   min-height: 85px;
+  max-height: 250px;
 }
 .mc-placeholder {
   font-size: 13px;  
