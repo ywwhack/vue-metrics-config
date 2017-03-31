@@ -2,16 +2,16 @@
   <draggable
     element="ul"
     class="mc-selected-list"
-    :list="localMetricsList"
+    :list="localList"
     @update="handleDragUpdate">
     <li
       class="metrics"
-      v-for="metrics in localMetricsList"
-      :key="metrics.id">
+      v-for="metrics in localList"
+      :key="metrics.name">
       {{ metrics.name }}
       <i
         class="el-icon-close"
-        @click="deselectMetrics(metrics.id)"></i>
+        @click="deselectMetrics(metrics)"></i>
     </li>
   </draggable>
 </template>
@@ -27,7 +27,7 @@ export default {
   },
 
   props: {
-    metricsList: {
+    data: {
       type: Array,
       default () {
         return []
@@ -37,25 +37,23 @@ export default {
 
   data () {
     return {
-      // 拖拽时会改变metricsList数组内部顺序
-      // 因此需要用一个组件内部状态localMetricsList跟踪props的metricsList的变化
-      localMetricsList: [ ...this.metricsList ]
+      localList: [ ...this.data ]
     }
   },
 
   watch: {
-    metricsList (newMetricsList) {
-      this.localMetricsList = [ ...newMetricsList ]
+    data (newData) {
+      this.localList = [ ...newData ]
     }
   },
 
   methods: {
-    deselectMetrics (id) {
-      this.$emit('deselect-metrics', id)
+    deselectMetrics (metrics) {
+      this.$emit('deselect-metrics', metrics)
     },
 
     handleDragUpdate () {
-      this.$emit('reorder-metrics-ids', this.localMetricsList.map(metrics => metrics.id))
+      this.$emit('reorder-list', this.localList)
     }
   }
 }

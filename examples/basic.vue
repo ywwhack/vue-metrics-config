@@ -3,7 +3,7 @@
     <metrics-config
       v-model="visible"
       :groups="groups"
-      :selected-metrics-ids="selectedIds"
+      :selected-list="selectedList"
       @change="handleChange">
     </metrics-config>
     <button @click="visible = true">打开</button>
@@ -25,13 +25,13 @@ export default {
     this.groups = GROUPS
     return {
       visible: false,
-      selectedIds: ['订单量', '交易额', '营业商户数']
+      selectedList: [{ id: '订单量', name: '订单量' }, { id: '交易额', name: '交易额' }, { id: '营业商户数', name: '营业商户数' }]
     }
   },
 
   methods: {
     handleChange (newMetricsList) {
-      this.selectedIds = newMetricsList.map(metrics => metrics.id)
+      this.selectedList = newMetricsList
     }
   }
 }

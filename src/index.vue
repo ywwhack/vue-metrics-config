@@ -9,10 +9,10 @@
       <div class="mc-title">已关注指标</div>
       <div class="mc-content">
         <y-selected-list
-          v-if="selectedMetricsList.length"
-          :metrics-list="selectedMetricsList"
+          v-if="localSelectedList.length"
+          :data="localSelectedList"
           @deselect-metrics="handleDeselectMetrics"
-          @reorder-metrics-ids="handleReorderMetricsIds">
+          @reorder-list="handleReorderList">
         </y-selected-list>
         <span v-else class="mc-placeholder">暂无关注指标，请点击下列指标关注</span>
       </div>
@@ -25,7 +25,7 @@
           :key="group.name"
           :max-name-length="maxNameLength"
           :data="group"
-          :selected-ids="localSelectedMetricsIds"
+          :selected-list="localSelectedList"
           @change="handleMetricsChange">
         </y-group>
       </ul>
@@ -42,7 +42,6 @@ import Vue from 'vue'
 import { Dialog, Loading, Button } from 'element-ui'
 import YGroup from './Group'
 import YSelectedList from './SelectedList'
-import { expandMetricsGroups } from './util'
 
 [Dialog, Loading, Button].forEach(component => Vue.use(component))
 
@@ -57,18 +56,12 @@ export default {
   props: {
     value: Boolean,
  
-    selectedMetricsIds: {
+    selectedList: {
       type: Array,
       default () {
         return []
       }
     },
-
-    // 10000 - 仪表盘
-    // 20000 - 商户实时数据
-    // 30000 - 物流实时数据
-    // This field is specific to Warboard
-    pageId: String,
 
     groups: Array
   },
@@ -77,32 +70,19 @@ export default {
     return {
       visible: false,
       loading: false,
-      // 使用组件内部状态来跟踪，是因为Dialog按取消的时候，原来选中的ids是不需要变的
-      // 只有在按确定按钮的时候，才需要将内部的localSelectedMetricsIds与外部selectedMetricsIds同步
-      localSelectedMetricsIds: [ ...this.selectedMetricsIds ],
+      // 使用组件内部状态来跟踪，是因为 Dialog 按取消的时候，原来选中的 list 是不需要变的
+      // 只有在按确定按钮的时候，才需要将内部的 localSelectedList 与外部 selectedMetrics 同步
+      localSelectedList: [ ...this.selectedList ],
       metricsGroups: this.groups || []
     }
   },
 
   computed: {
-    selectedMetricsList () {
-      const { metricsGroups, localSelectedMetricsIds } = this
-
-      // 如果没有选中的指标，提前返回一个空数组
-      if (!localSelectedMetricsIds.length || !metricsGroups.length) return []
-
-      // 这里将所有的metricsGroup展开成一个obejct, 对象key为metrics id, 值为metrics name
-      // 之所以展开成这种形式，是为了在下一步中的id => metrics映射中避免每次都遍历一遍整个metrics数组
-      const allMetrics = expandMetricsGroups(metricsGroups)
-
-      return localSelectedMetricsIds.map(id => ({id, name: allMetrics[id]}))
-    },
-
     maxNameLength () {
       return this.metricsGroups.reduce((max, cur) => {
         return Math.max(max, cur.name.length + 1)
       }, 0)
-    },
+    }
   },
 
   watch: {
@@ -120,69 +100,40 @@ export default {
   },
 
   methods: {
-    filterMetrics (id) {
-      return this.localSelectedMetricsIds.filter(metricsId => metricsId !== id)
+    filterMetrics (metrics) {
+      return this.localSelectedList.filter(i => i.name !== metrics.name)
     },
 
-    handleMetricsChange ({id, selected}) {
-      let newSelectedMetricsIds = []
+    handleMetricsChange ({ metrics, selected }) {
+      let newSelectedList = []
       if (selected) {
-        newSelectedMetricsIds = [ ...this.localSelectedMetricsIds, id ]
+        newSelectedList = [ ...this.localSelectedList, metrics ]
       } else {
-        newSelectedMetricsIds = this.filterMetrics(id)
+        newSelectedList = this.filterMetrics(metrics)
       }
-      this.localSelectedMetricsIds = newSelectedMetricsIds
+      this.localSelectedList = newSelectedList
     },
 
-    handleDeselectMetrics (id) {
-      this.localSelectedMetricsIds = this.filterMetrics(id)
+    handleDeselectMetrics (metrics) {
+      this.localSelectedList = this.filterMetrics(metrics)
     },
 
-    handleReorderMetricsIds (reorderedIds) {
-      this.localSelectedMetricsIds = reorderedIds
+    handleReorderList (reorderedList) {
+      this.localSelectedList = reorderedList
     },
 
     handleCancel () {
       this.visible = false
-      // 重置本地选中的ids
-      this.localSelectedMetricsIds = this.selectedMetricsIds
+      // 重置本地选中的 list
+      this.localSelectedList = this.selectedList
     },
 
     handleConfirm () {
       this.visible = false
       // 触发父级事件，将在本地选中的ids向外传递
-      this.$emit('change', this.selectedMetricsList)
+      this.$emit('change', this.localSelectedList)
     }
-
-    // requestForMetricsGroups () {
-    //   const { pageId } = this
-    //   this.loading = true
-    //   axios.get('/quotaConfig/config', {
-    //     params: {
-    //       quotaCategory: 1,
-    //       pageId
-    //     }
-    //   })
-    //     .then(data => {
-    //       this.loading = false
-    //       if (data) {
-    //         this.metricsGroups = data
-    //         this.$emit('groups-fetched', data)
-    //       }
-    //     })
-    //     .catch(() => {
-    //       this.loading = false
-    //     })
-    // }
-  },
-
-  // created () {
-  //   const { pageId, metricsGroups } = this
-  //   // 如果提供了 pageId，并且没有请求过指标数据
-  //   if (pageId && !metricsGroups.length) {
-  //     this.requestForMetricsGroups()
-  //   }
-  // }
+  }
 }
 </script>
 

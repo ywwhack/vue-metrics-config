@@ -4,9 +4,9 @@
     <ul class="metrics" :style="metricsStyle">
       <li
         v-for="metrics in data.items"
-        :key="metrics.id"
-        :class="['metrics-item', { ['metrics-selected']: isMetricsSelected(metrics.id) }]"
-        @click="toggleSelect(metrics.id)">
+        :key="metrics.name"
+        :class="['metrics-item', { ['metrics-selected']: isMetricsSelected(metrics) }]"
+        @click="toggleSelect(metrics)">
         {{ metrics.name }}
       </li>
     </ul>
@@ -27,7 +27,7 @@ export default {
       required: true
     },
 
-    selectedIds: {
+    selectedList: {
       type: Array,
       default () {
         return []
@@ -46,15 +46,15 @@ export default {
   },
 
   methods: {
-    isMetricsSelected (id) {
-      return this.selectedIds.indexOf(id) > -1
+    isMetricsSelected (metrics) {
+      return this.selectedList.findIndex(i => i.name === metrics.name) > -1
     },
 
-    toggleSelect (id) {
-      const selected = this.isMetricsSelected(id)
+    toggleSelect (metrics) {
+      const selected = this.isMetricsSelected(metrics)
       // 向父级触发事件的时候，需要将选中状态取反
       this.$emit('change', {
-        id,
+        metrics,
         selected: !selected
       })
     }
