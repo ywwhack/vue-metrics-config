@@ -99,7 +99,12 @@ export default {
       }
     },
 
-    groups: Array
+    groups: {
+      type: Array,
+      default () {
+        return []
+      }
+    }
   },
 
   data () {
@@ -110,7 +115,7 @@ export default {
       // 使用组件内部状态来跟踪，是因为 Dialog 按取消的时候，原来选中的 list 是不需要变的
       // 只有在按确定按钮的时候，才需要将内部的 localSelectedList 与外部 selectedMetrics 同步
       localSelectedList: [ ...this.selectedList ],
-      metricsGroups: this.groups || []
+      metricsGroups: this.groups
     }
   },
 
