@@ -55,12 +55,8 @@
 </template>
 
 <script>
-import Vue from 'vue'
-import { Dialog, Loading, Button, Input } from 'element-ui'
 import DtGroup from './Group'
 import DtSelectedList from './SelectedList'
-
-[Dialog, Loading, Button, Input].forEach(component => Vue.use(component))
 
 export default {
   name: 'dt-metrics-config',

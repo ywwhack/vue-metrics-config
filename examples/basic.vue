@@ -13,8 +13,12 @@
 </template>
 
 <script>
-import DtMetricsConfig from '../src'
+import Vue from 'vue'
+import { Dialog, Loading, Button, Input } from 'element-ui'
+import DtMetricsConfig from '..'
 import GROUPS from './data.json'
+
+[Dialog, Loading, Button, Input].forEach(component => Vue.use(component))
 
 export default {
   name: 'basic',
