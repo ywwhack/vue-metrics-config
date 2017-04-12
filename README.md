@@ -28,6 +28,8 @@ groups | Array | [] | 指标分组
 selected-list | Array | [] | 选中的指标
 searchable | Boolean | false | 是否可搜索指标，默认不可搜索
 max-select-count | Number | 无 | 最多可以选中几个指标，如果不设置，将不限制指标选中的数量
+tip | String | 无 | 右上角的提示语
+confirm-btn-disabled | Boolean | false | 确认按钮是否可以点击
 title | String | 指标配置 | Dialog 标题
 size | String | small | Dialog 大小，参见 [element-dialog](http://element.eleme.io/#/zh-CN/component/dialog#attributes)
 top | String | 50px | Dialog 距顶部距离
@@ -35,7 +37,8 @@ top | String | 50px | Dialog 距顶部距离
 ## Evnets
 事件名 | 描述 | 回调参数
 ---- | ---- | ----
-change | 选中项改变时触发（包括拖拽排序）| selectedList 选中的指标数组
+change | 点击确认按钮时触发 | selectedList 选中的指标数组
+temp-change | 选中项改变时触发（包括拖拽排序），不要在这个事件中改变 `selectedList`, 会导致选中状态不同步，改变 `selectedList` 请在 `change` 事件中，可以在这个事件中对其他状态进行更改，如确定按钮的「可点击」状态 | selectedList 选中的指标数组
 
 ## groups && selected-list 结构
 ```javascript
