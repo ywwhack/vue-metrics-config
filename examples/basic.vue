@@ -15,7 +15,7 @@
 <script>
 import Vue from 'vue'
 import { Dialog, Loading, Button, Input } from 'element-ui'
-import DtMetricsConfig from '..'
+import DtMetricsConfig from '../src'
 import GROUPS from './data.json'
 
 [Dialog, Loading, Button, Input].forEach(component => Vue.use(component))

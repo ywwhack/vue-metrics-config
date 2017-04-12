@@ -10,7 +10,10 @@
     <div>
       <div class="mc-title">
         <div>已关注指标</div>
-        <div v-if="maxSelectCount" style="color: #a2b1c5;">注：最多关注 {{ maxSelectCount }} 个指标</div>
+        <div style="color: #a2b1c5;">
+          <span v-if="tip">{{ tip }}</span>
+          <span v-else-if="maxSelectCount">注：最多关注 {{ maxSelectCount }} 个指标</span>
+        </div>
       </div>
       <div class="mc-content mc-selected-content">
         <dt-selected-list
@@ -72,6 +75,8 @@ export default {
     searchable: Boolean,
 
     maxSelectCount: Number,
+
+    tip: String,
 
     size: {
       type: String,
