@@ -52,7 +52,7 @@
     </div>
     <div slot="footer" :class="['dialog-footer', 'mc-footer']">
       <el-button @click="handleCancel">取消</el-button>
-      <el-button type="primary" @click="handleConfirm">确定</el-button>
+      <el-button type="primary" @click="handleConfirm" :disabled="confirmBtnDisabled">确定</el-button>
     </div>
   </el-dialog>
 </template>
@@ -60,6 +60,8 @@
 <script>
 import DtGroup from './Group'
 import DtSelectedList from './SelectedList'
+
+const TEMP_CHANGE_EVENT = 'temp-change'
 
 export default {
   name: 'dt-metrics-config',
@@ -77,6 +79,8 @@ export default {
     maxSelectCount: Number,
 
     tip: String,
+
+    confirmBtnDisabled: Boolean,
 
     size: {
       type: String,
@@ -115,7 +119,7 @@ export default {
       searchText: '',
       // 使用组件内部状态来跟踪，是因为 Dialog 按取消的时候，原来选中的 list 是不需要变的
       // 只有在按确定按钮的时候，才需要将内部的 localSelectedList 与外部 selectedMetrics 同步
-      localSelectedList: [ ...this.selectedList ],
+      localSelectedList: [...this.selectedList],
       metricsGroups: this.groups
     }
   },
@@ -154,6 +158,10 @@ export default {
 
     groups (newGroups) {
       this.metricsGroups = newGroups
+    },
+
+    selectedList (newSelectedList) {
+      this.localSelectedList = [...newSelectedList]
     }
   },
 
@@ -176,14 +184,18 @@ export default {
         newSelectedList = this.filterMetrics(metrics)
       }
       this.localSelectedList = newSelectedList
+      this.$emit(TEMP_CHANGE_EVENT, [...newSelectedList])
     },
 
     handleDeselectMetrics (metrics) {
-      this.localSelectedList = this.filterMetrics(metrics)
+      const newSelectedList = this.filterMetrics(metrics)
+      this.localSelectedList = newSelectedList
+      this.$emit(TEMP_CHANGE_EVENT, [...newSelectedList])
     },
 
     handleReorderList (reorderedList) {
       this.localSelectedList = reorderedList
+      this.$emit(TEMP_CHANGE_EVENT, [...reorderedList])
     },
 
     handleCancel () {
