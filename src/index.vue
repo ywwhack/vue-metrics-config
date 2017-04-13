@@ -2,7 +2,6 @@
   <el-dialog
     class="mc"
     v-model="visible"
-    v-loading="loading"
     :title="title"
     :top="top"
     :size="size"
@@ -115,7 +114,6 @@ export default {
   data () {
     return {
       visible: false,
-      loading: false,
       searchText: '',
       // 使用组件内部状态来跟踪，是因为 Dialog 按取消的时候，原来选中的 list 是不需要变的
       // 只有在按确定按钮的时候，才需要将内部的 localSelectedList 与外部 selectedMetrics 同步
@@ -202,12 +200,14 @@ export default {
       this.visible = false
       // 重置本地选中的 list
       this.localSelectedList = this.selectedList
+      this.$emit(TEMP_CHANGE_EVENT, this.selectedList)
     },
 
     handleConfirm () {
       this.visible = false
       // 触发父级事件，将在本地选中的ids向外传递
       this.$emit('change', this.localSelectedList)
+      this.$emit(TEMP_CHANGE_EVENT, this.localSelectedList)
     },
 
     overrideTitleStyle () {
