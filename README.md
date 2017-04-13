@@ -11,9 +11,9 @@ npm i vue-metrics-config
 ## Dependency
 ```
 // 该组件依赖 element-ui，需要先组册 element-ui 相关组件
-import { Dialog, Loading, Button, Input } from 'element-ui'
+import { Dialog, Button, Input } from 'element-ui'
 
-[Dialog, Loading, Button, Input].forEach(component => Vue.use(component))
+[Dialog, Button, Input].forEach(component => Vue.use(component))
 
 // or
 import ElementUI from 'element-ui'
