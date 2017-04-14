@@ -3,10 +3,11 @@
   "description": "基于 vue 的指标配置组件",
   "version": "1.2.1",
   "author": "ywwhack <yww7289@163.com>",
-  "main": "dist/build.js",
+  "main": "./dist/build.js",
+  "repository": "https://github.com/ywwhack/vue-metrics-config",
   "scripts": {
-    "build": "webpack",
-    "prepublish": "npm run build",
+    "build": "webpack --progress --hide-modules",
+    "prepublishOnly": "npm run build",
     "release": "np"
   },
   "dependencies": {
@@ -28,5 +29,6 @@
     "vue-template-compiler": "^2.2.1",
     "webpack": "^2.2.0",
     "webpack-dev-server": "^2.2.0"
-  }
+  },
+  "license": "MIT"
 }
